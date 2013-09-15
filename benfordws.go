@@ -9,21 +9,18 @@ import (
 	"io"
 	)
 
-type ErrorMessage struct {
-	Error	string
-}
+type Response map[string]interface{}
 
 type Dataset struct {
 	Set []int
 }
 
-func JsonErrMsg(message string) string {
-	var msg ErrorMessage = ErrorMessage{message}
-
-	b, err := json.Marshal(msg)
+func (r Response) String() (string) {
+	b, err := json.Marshal(r)
 
 	if err != nil {
 		log.Printf("Failed to marshal JSON: %s\n", err)
+		return ""
 	}
 
 	return string(b[:])
@@ -44,7 +41,7 @@ func parseSet(body io.ReadCloser) ([]int) {
 
 func handler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
-		fmt.Fprintf(w, "%s\n", JsonErrMsg("Only supports method POST"))
+		fmt.Fprintf(w, "%s\n", Response{"Error":"Only supports method POST"})
 		return
 	}
 
