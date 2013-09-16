@@ -23,7 +23,7 @@ func (r Response) String() (string) {
 		return ""
 	}
 
-	return string(b[:])
+	return string(b)
 }
 
 func parseSet(body io.ReadCloser) ([]int) {
