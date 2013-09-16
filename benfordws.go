@@ -2,13 +2,13 @@ package main
 
 import (
 	"encoding/json"
-	"net/http"
-	"log"
 	"fmt"
 	"github.com/antonlindstrom/benfordslaw/counter"
 	"io"
+	"log"
+	"net/http"
 	"os"
-	)
+)
 
 type Response map[string]interface{}
 
@@ -16,7 +16,7 @@ type Dataset struct {
 	Set []int
 }
 
-func (r Response) String() (string) {
+func (r Response) String() string {
 	b, err := json.Marshal(r)
 
 	if err != nil {
@@ -27,11 +27,11 @@ func (r Response) String() (string) {
 	return string(b)
 }
 
-func parseSet(body io.ReadCloser) ([]int) {
+func parseSet(body io.ReadCloser) []int {
 	var d Dataset
 
 	decoder := json.NewDecoder(body)
-	err     := decoder.Decode(&d)
+	err := decoder.Decode(&d)
 
 	if err != nil {
 		log.Printf("Error could not parse JSON!\n")
@@ -42,7 +42,7 @@ func parseSet(body io.ReadCloser) ([]int) {
 
 func handler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
-		fmt.Fprintf(w, "%s\n", Response{"Error":"Only supports method POST"})
+		fmt.Fprintf(w, "%s\n", Response{"Error": "Only supports method POST"})
 		return
 	}
 
