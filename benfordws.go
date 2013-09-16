@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/antonlindstrom/benfordslaw/counter"
 	"io"
+	"os"
 	)
 
 type Response map[string]interface{}
@@ -50,7 +51,13 @@ func handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	log.Printf("Starting up WS on port 6000")
+	var port = "6000"
+
+	if os.Getenv("PORT") != "" {
+		port = os.Getenv("PORT")
+	}
+
+	log.Printf("Starting up WS on port %s\n", port)
 	http.HandleFunc("/", handler)
-	log.Fatal(http.ListenAndServe(":6000", nil))
+	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
