@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/antonlindstrom/benfordslaw/counter"
+	"github.com/antonlindstrom/benfordslaw"
 	"io"
 	"log"
 	"net/http"
@@ -46,8 +46,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	total, _ := counter.Process(parseSet(r.Body))
-	log.Printf("Processed dataset of %d numbers\n", total)
+	fmt.Fprintf(w, "%s\n", benfordslaw.Process(parseSet(r.Body)))
 }
 
 func main() {
