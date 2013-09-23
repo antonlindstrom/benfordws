@@ -4,7 +4,7 @@ A web API for Benfordslaw.
 
 Example: 
 
-    curl -X POST -d "{ \"Set\": [ 1, 5, 8, 100, 43, 300 ] }"
+    curl -X POST -d "{ \"Set\": [ 1, 5, 8, 100, 43, 300 ] }" http://localhost:6000
 
 This will log:
 
