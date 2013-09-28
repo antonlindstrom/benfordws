@@ -21,7 +21,3 @@ Run the Fibonacci numbers in the fibonacci.json:
     curl -X POST -d @fibonacci.json http://localhost:6000
 
 You'll get a JSON hash back with information about the Benford estimate of the numbers.
-
-This will log:
-
-    2013/09/15 15:20:52 Processed dataset of 6 numbers
