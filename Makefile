@@ -1,4 +1,6 @@
-all:
+all: get-deps build
+
+build:
 	@mkdir -p bin/
 	@go build -o bin/benfordws benfordws.go
 
