@@ -47,6 +47,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fmt.Fprintf(w, "%s\n", benfordslaw.Process(parseSet(r.Body)))
+	log.Printf("Calculated payload with Content-Length %d\n", r.ContentLength)
 }
 
 func main() {
