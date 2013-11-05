@@ -4,52 +4,17 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/antonlindstrom/benfordslaw"
-	"io"
+	"github.com/technoweenie/grohl"
 	"log"
 	"net/http"
 	"os"
 )
 
-type Response map[string]interface{}
-
 type Dataset struct {
 	Set []int
 }
 
-func (r Response) String() string {
-	b, err := json.Marshal(r)
-
-	if err != nil {
-		log.Printf("Failed to marshal JSON: %s\n", err)
-		return ""
-	}
-
-	return string(b)
-}
-
-func parseSet(body io.ReadCloser) []int {
-	var d Dataset
-
-	decoder := json.NewDecoder(body)
-	err := decoder.Decode(&d)
-
-	if err != nil {
-		log.Printf("Error could not parse JSON!\n")
-	}
-
-	return d.Set
-}
-
-func handler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "POST" {
-		fmt.Fprintf(w, "%s\n", Response{"Error": "Only supports method POST"})
-		return
-	}
-
-	fmt.Fprintf(w, "%s\n", benfordslaw.Process(parseSet(r.Body)))
-	log.Printf("Calculated payload with Content-Length %d\n", r.ContentLength)
-}
-
+// Main, start up WS
 func main() {
 	var port = "6000"
 
@@ -57,7 +22,33 @@ func main() {
 		port = os.Getenv("PORT")
 	}
 
-	log.Printf("Starting up WS on port %s\n", port)
+	grohl.AddContext("app", "benfordws")
+	grohl.Log(grohl.Data{"state": "startup", "port": port})
+
 	http.HandleFunc("/", handler)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
+}
+
+// Handler to process the data. Only Allows POST
+func handler(w http.ResponseWriter, r *http.Request) {
+	timer := grohl.NewTimer(grohl.Data{"path": r.URL.Path, "method": r.Method})
+
+	defer timer.Finish()
+	defer r.Body.Close()
+
+	if r.Method != "POST" {
+		fmt.Fprintf(w, "%s\n", "{\"Error\":\"Only supports method POST\"}")
+		return
+	}
+
+	var d Dataset
+
+	decoder := json.NewDecoder(r.Body)
+	err := decoder.Decode(&d)
+
+	if err != nil {
+		grohl.Log(grohl.Data{"error": "json", "type": "decode"})
+	}
+
+	fmt.Fprintf(w, "%s\n", benfordslaw.Process(d.Set))
 }
