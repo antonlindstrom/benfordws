@@ -25,12 +25,12 @@ func main() {
 	grohl.AddContext("app", "benfordws")
 	grohl.Log(grohl.Data{"state": "startup", "port": port})
 
-	http.HandleFunc("/", handler)
+	http.HandleFunc("/", BenfordHandler)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
 
 // Handler to process the data. Only Allows POST
-func handler(w http.ResponseWriter, r *http.Request) {
+func BenfordHandler(w http.ResponseWriter, r *http.Request) {
 	timer := grohl.NewTimer(grohl.Data{"path": r.URL.Path, "method": r.Method})
 
 	defer timer.Finish()
