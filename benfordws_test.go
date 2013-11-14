@@ -2,14 +2,13 @@ package main
 
 import (
 	"bytes"
+	"encoding/json"
 	"io/ioutil"
-	"testing"
 	"net/http"
 	"net/http/httptest"
-	"encoding/json"
 	"regexp"
+	"testing"
 )
-
 
 // Test default benford handler
 func TestBenfordHandler(t *testing.T) {
