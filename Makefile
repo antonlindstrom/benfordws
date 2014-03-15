@@ -10,5 +10,12 @@ get-deps:
 test:
 	@go test -v ./...
 
+coverage:
+	@go get code.google.com/p/go.tools/cmd/cover
+	@go test -cover ./...
+
+benchmark:
+	@go test -bench ./...
+
 clean:
 	@rm -rf bin/
