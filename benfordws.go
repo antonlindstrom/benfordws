@@ -26,6 +26,7 @@ func main() {
 	grohl.Log(grohl.Data{"state": "startup", "port": port})
 
 	http.HandleFunc("/", BenfordHandler)
+	http.HandleFunc("/status", StatusHandler)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
 
@@ -51,4 +52,14 @@ func BenfordHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fmt.Fprintf(w, "%s\n", benfordslaw.Process(d.Set))
+}
+
+// Handler for status
+func StatusHandler(w http.ResponseWriter, r *http.Request) {
+	timer := grohl.NewTimer(grohl.Data{"path": r.URL.Path, "method": r.Method})
+
+	defer timer.Finish()
+	defer r.Body.Close()
+
+	fmt.Fprintf(w, "ok\n")
 }
